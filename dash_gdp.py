@@ -54,6 +54,7 @@ df['Out of pocket health expenditure'] = df['Out of pocket health expenditure'].
 df['GDP'] = df['GDP'].replace({r'[^\d.]': '', ',':''}, regex=True).astype(float)
 df['Primary education'] = df['Gross primary education enrollment (%)'].replace({r'[^\d.]': '', ',':''}, regex=True).astype(float)
 df['Tertiary education'] = df['Gross tertiary education enrollment (%)'].replace({r'[^\d.]': '', ',':''}, regex=True).astype(float)
+df['Minimum wage'] = df['Minimum wage'].replace({r'[^\d.]': '', ',':''}, regex=True).astype(float)
 
 #drop columns that are corrected above
 df = df.drop(columns=['Gross primary education enrollment (%)', 'Gross tertiary education enrollment (%)'])
@@ -120,11 +121,12 @@ df = df.drop('Population', axis=1)
 df_top10 = df.sort_values('GDP per Billion $', ascending=False).head(10)
 
 #list of numeric columns for scatter plot dropdown
-numeric_columns = ['Birth Rate', 'CPI', 'Fertility Rate', 'Gross primary education enrollment (%)',
+numeric_columns = ['Birth Rate', 'CPI', 'Fertility Rate', 'Tertiary education',
                    'Gross tertiary education enrollment (%)', 'Infant mortality',
                    'Life expectancy', 'Maternal mortality ratio', 'Minimum wage',
                    'Out of pocket health expenditure', 'Physicians per thousand',
-                   'Gross primary education enrollment (%)']
+                   'Primary education']
+numeric_columns.sort()
 #list of numeric columns for choropleth dropdown
 numeric_columns_map = ['Density\n(P/Km2)', 'Agricultural Land( %)', 'Land Area(Km2)',
                        'Armed Forces size', 'Birth Rate', 'Co2-Emissions', 'Fertility Rate', 'Forested Area (%)',
@@ -134,7 +136,8 @@ numeric_columns_map = ['Density\n(P/Km2)', 'Agricultural Land( %)', 'Land Area(K
                        'Out of pocket health expenditure', 'Physicians per thousand',
                        'Population: Labor force participation (%)',
                        'Total tax rate', 'Unemployment rate',
-                       'Urban_population', 'Gross primary education enrollment (%)']
+                       'Urban_population', 'Primary education', 'Tertiary education', 'GDP per Billion $']
+numeric_columns_map.sort()
 
 #normalize numeric columns for GDP, infant mortality, and out of pocket expenditure
 categories = ['GDP per Billion $', 'Infant mortality', 'Out of pocket health expenditure', 
@@ -253,7 +256,7 @@ app.layout = html.Div(
             dcc.Dropdown(
                 id='y-axis-dropdown',
                 options=[{'label': col, 'value': col} for col in numeric_columns],
-                value='Co2-Emissions',
+                value=numeric_columns[0],
                 style={'width': '100%'}
             ),
             dcc.Graph(id='scatter-plot')
@@ -263,7 +266,7 @@ app.layout = html.Div(
             dcc.Dropdown(
                 id='y-axis-dropdown2',
                 options=[{'label': col, 'value': col} for col in numeric_columns_map],
-                value='Co2-Emissions',
+                value=numeric_columns_map[0],
                 style={'width': '100%'}
             ),
             dcc.Graph(id='choropleth-plot')
@@ -335,13 +338,13 @@ def update_charts_by_region(selected_region, y_column,y_column2):
     fig_bar.update_layout(yaxis_title="GDP ($)", xaxis_title="Country", showlegend=False)
 
     df_scatter = df_chart.sort_values('GDP per Billion $', ascending=False)
-    #update the infant mortality chart
+    #update the scatter chart
     fig_scatter = px.scatter(df_scatter,
                             x='GDP per Billion $',
                             y=y_column,
                             color='Country',
                             color_continuous_scale='Purples',
-                            size='Infant mortality',
+                            size='PopulationperBillion',
                             hover_name='Country',
                             title=f"({y_column}) vs GDP ($) / billion ({selected_region})",
                             )
