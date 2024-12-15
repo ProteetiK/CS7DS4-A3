@@ -109,15 +109,15 @@ country_to_region = {
 df['Region'] = df['Country'].map(country_to_region)
 
 #create a column for GDP per Billion
-df['GDP per Billion'] = df['GDP'] / 1000000000
+df['GDP per Billion $'] = df['GDP'] / 1000000000
 df = df.drop('GDP', axis=1)
 
 #create a population per Billion
 df['PopulationperBillion'] = df['Population'] / 1000000000
 df = df.drop('Population', axis=1)
 
-#filter dataframe for the top 10 countries by GDP per Billion
-df_top10 = df.sort_values('GDP per Billion', ascending=False).head(10)
+#filter dataframe for the top 10 countries by GDP per Billion $
+df_top10 = df.sort_values('GDP per Billion $', ascending=False).head(10)
 
 #list of numeric columns for scatter plot dropdown
 numeric_columns = ['Birth Rate', 'CPI', 'Fertility Rate', 'Gross primary education enrollment (%)',
@@ -137,7 +137,7 @@ numeric_columns_map = ['Density\n(P/Km2)', 'Agricultural Land( %)', 'Land Area(K
                        'Urban_population', 'Gross primary education enrollment (%)']
 
 #normalize numeric columns for GDP, infant mortality, and out of pocket expenditure
-categories = ['GDP per Billion', 'Infant mortality', 'Out of pocket health expenditure', 
+categories = ['GDP per Billion $', 'Infant mortality', 'Out of pocket health expenditure', 
               'Unemployment rate', 'Life expectancy', 'Primary education']
 df_normalized = df[categories]
 df_normalized = df_normalized.apply(lambda x: (x - x.min()) / (x.max() - x.min()))
@@ -177,12 +177,12 @@ purple_hues = ['#6A0DAD', '#9B30FF', '#8A2BE2', '#BA55D3', '#9932CC']
 fig_bar = px.bar(
     df_top10,
     x='Country',
-    y='GDP per Billion',
+    y='GDP per Billion $',
     color='Country',
     color_discrete_sequence=purple_hues,
-    text='GDP per Billion',
-    title="Top 10 Countries by GDP per Billion",
-    labels={'GDP per Billion': 'GDP ($)'}
+    text='GDP per Billion $',
+    title="Top 10 Countries by GDP per Billion $",
+    labels={'GDP per Billion $': 'GDP ($)'}
 )
 fig_bar.update_traces(texttemplate='%{text:.2s}', textposition='outside')
 
@@ -192,7 +192,7 @@ fig_bar.update_layout(yaxis_title="GDP ($)", xaxis_title="Country", showlegend=F
 fig_infant = px.scatter(
     df,
     x='Out of pocket health expenditure',
-    y='GDP per Billion',
+    y='GDP per Billion $',
     color='Region',
     color_continuous_scale='Purples',
     size='Infant mortality',
@@ -201,9 +201,9 @@ fig_infant = px.scatter(
 
 #create a choropleth map
 fig_choropleth = px.choropleth(df, locations="Country", 
-                               locationmode="country names", color='GDP per Billion', 
+                               locationmode="country names", color='GDP per Billion $', 
                                hover_name="Country", color_continuous_scale='Purples', 
-                               title='GDP per Billion by Country')
+                               title='GDP per Billion $ by Country')
 
 #initialize the app
 app = dash.Dash(__name__)
@@ -322,22 +322,22 @@ def update_charts_by_region(selected_region, y_column,y_column2):
                              title=f"Comparing Countries Across Multiple Metrics ({selected_region})")
 
     #update the bar chart
-    df_top10_filtered = df_chart.sort_values('GDP per Billion', ascending=False).head(10)
+    df_top10_filtered = df_chart.sort_values('GDP per Billion $', ascending=False).head(10)
     fig_bar = px.bar(df_top10_filtered,
                      x='Country',
-                     y='GDP per Billion',
+                     y='GDP per Billion $',
                      color='Country',
                      color_discrete_sequence=purple_hues,
-                     text='GDP per Billion',
+                     text='GDP per Billion $',
                      title=f"Top 10 Countries by GDP ({selected_region})",
-                     labels={'GDP per Billion': 'GDP ($)'})
+                     labels={'GDP per Billion $': 'GDP ($)'})
     fig_bar.update_traces(texttemplate='%{text:.2s}', textposition='outside')
     fig_bar.update_layout(yaxis_title="GDP ($)", xaxis_title="Country", showlegend=False)
 
-    df_scatter = df_chart.sort_values('GDP per Billion', ascending=False)
+    df_scatter = df_chart.sort_values('GDP per Billion $', ascending=False)
     #update the infant mortality chart
     fig_scatter = px.scatter(df_scatter,
-                            x='GDP per Billion',
+                            x='GDP per Billion $',
                             y=y_column,
                             color='Country',
                             color_continuous_scale='Purples',
@@ -346,7 +346,7 @@ def update_charts_by_region(selected_region, y_column,y_column2):
                             title=f"({y_column}) vs GDP ($) / billion ({selected_region})",
                             )
     fig_scatter.update_layout(xaxis=dict(type='category', categoryorder='array'),
-                             title=f"({y_column}) vs GDP per Billion ({selected_region})")
+                             title=f"({y_column}) vs GDP per Billion $ ({selected_region})")
 
     #update the choropleth map
     fig_choropleth = px.choropleth(
@@ -364,7 +364,7 @@ def update_charts_by_region(selected_region, y_column,y_column2):
     fig_infant = px.scatter(
     df_chart,
     x='Out of pocket health expenditure',
-    y='GDP per Billion',
+    y='GDP per Billion $',
     color='Region',
     color_continuous_scale='Purples',
     size='Infant mortality',
