@@ -138,7 +138,7 @@ numeric_columns_map = ['Density\n(P/Km2)', 'Agricultural Land( %)', 'Land Area(K
 
 #normalize numeric columns for GDP, infant mortality, and out of pocket expenditure
 categories = ['GDP per Billion', 'Infant mortality', 'Out of pocket health expenditure', 
-              'Unemployment rate', 'Life expectancy', 'Fertility Rate']
+              'Unemployment rate', 'Life expectancy', 'Primary education']
 df_normalized = df[categories]
 df_normalized = df_normalized.apply(lambda x: (x - x.min()) / (x.max() - x.min()))
 
