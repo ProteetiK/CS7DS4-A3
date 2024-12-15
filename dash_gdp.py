@@ -122,7 +122,7 @@ df_top10 = df.sort_values('GDP per Billion $', ascending=False).head(10)
 
 #list of numeric columns for scatter plot dropdown
 numeric_columns = ['Birth Rate', 'CPI', 'Fertility Rate', 'Tertiary education',
-                   'Gross tertiary education enrollment (%)', 'Infant mortality',
+                   'Infant mortality',
                    'Life expectancy', 'Maternal mortality ratio', 'Minimum wage',
                    'Out of pocket health expenditure', 'Physicians per thousand',
                    'Primary education']
@@ -130,8 +130,7 @@ numeric_columns.sort()
 #list of numeric columns for choropleth dropdown
 numeric_columns_map = ['Density\n(P/Km2)', 'Agricultural Land( %)', 'Land Area(Km2)',
                        'Armed Forces size', 'Birth Rate', 'Co2-Emissions', 'Fertility Rate', 'Forested Area (%)',
-                       'Gross primary education enrollment (%)',
-                       'Gross tertiary education enrollment (%)', 'Infant mortality',
+                       'Infant mortality',
                        'Life expectancy', 'Maternal mortality ratio', 'Minimum wage',
                        'Out of pocket health expenditure', 'Physicians per thousand',
                        'Population: Labor force participation (%)',
